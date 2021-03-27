@@ -1,19 +1,30 @@
-import react, { StrictMode , useState } from 'react'
+import { useEffect, useState } from 'react'
 import { clone, filter, remove } from 'lodash'
 
 import Board from './Components/Board'
 import './App.css';
+import React from 'react';
 
 const Game = () => {
    const [ isFirstPlayer, setIsFirstPlayer ] = useState<boolean>(true)
    const [ isGameOver, setIsGameOver ] = useState<boolean>(false)
    const [ winner, setWinner ] = useState<string|null>(null)
+   const [ gameStatus, setGameStatus ] = useState('')
    const [ squares, setSquares ] = useState<(string|null)[][]>([
     [ null, null, null, null, null, null, null, null ],
   ])
 
-  const getCurrentPlayer = () => isFirstPlayer ? 'X' : 'O'
+  useEffect(() => {
+    alert('Let the game begin!!!')
+  }, [])
 
+  useEffect(() => {
+    const gameStatus = winner ? `Player ${winner} won!` : isGameOver ? 'Game over - No more moves left! ':`Current Player: ${getCurrentPlayer()} `
+    setGameStatus(gameStatus)
+  }, [ isFirstPlayer, isGameOver, winner ])
+
+  const getCurrentPlayer = () => isFirstPlayer ? 'X' : 'O'
+  
   const computeWinner = (squares:(string| null)[]) => {
     const lines = [
       [0, 1, 2],
@@ -61,8 +72,11 @@ const Game = () => {
     const currentBoardState = squares[squares.length - 1]
     const currentValue = currentBoardState[index]
     
-    if(isGameOver) {
-      window.alert(`Game is over - Player ${winner} has already won. \n Press reset to play another game.`)
+    if(winner) {
+      window.alert(`Game over - Player ${winner} has already won. \n Press reset to play another game.`)
+    }
+    else if(isGameOver) {
+      window.alert(`Game over - No more moves left!`)
     }
     else if(currentValue) {
       window.alert('Illegal move! Please add your symbol on an empty square.')
@@ -83,12 +97,7 @@ const Game = () => {
   
   return (
     <div className={'game'}>
-      <div className="game-board">
-        {winner
-          ? <div className="status">Player {winner} WON !!</div>
-          : <div className="status">Next player: {getCurrentPlayer()}</div>
-        }
-      </div>
+      <p>{gameStatus}</p>
       <div style={{ flexDirection:'row' }}>
         <Board 
           isGameOver={isGameOver}

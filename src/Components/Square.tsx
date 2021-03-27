@@ -9,7 +9,7 @@ interface Props {
 
 const Square = (props: Props) => {
 
-  const { index, isGameOver, value, onSquarePress} = props
+  const { index, isGameOver, value, onSquarePress } = props
 
   return (
     <button className={`square ${isGameOver ? 'square-game-over' :'square-game-active'}`} 
