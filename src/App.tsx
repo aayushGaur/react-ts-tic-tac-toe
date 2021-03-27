@@ -11,7 +11,7 @@ const Game = () => {
    const [ winner, setWinner ] = useState<string|null>(null)
    const [ gameStatus, setGameStatus ] = useState('')
    const [ squares, setSquares ] = useState<(string|null)[][]>([
-    [ null, null, null, null, null, null, null, null ],
+    [ null, null, null, null, null, null, null, null, null ],
   ])
 
   useEffect(() => {
@@ -40,7 +40,8 @@ const Game = () => {
     if(filter(squares, (e) => e !== null).length !== 0) {
       for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
-        if (squares[a] && squares[a] === squares[b] &&
+        if (squares[a] && 
+            squares[a] === squares[b] &&
             squares[a] === squares[c]) {
           return squares[a];
         }
@@ -59,17 +60,17 @@ const Game = () => {
   }
 
   const navigateToStep = (navigateToStep: number) => {
-    const isFirstPlayer = (navigateToStep % 2 === 0)
-    remove(squares, (e, i) => (i >= navigateToStep + 1) && i > 0)
+    const clonedSquares = clone(squares)
+    remove(clonedSquares, (e, i) => (i >= navigateToStep + 1) && i > 0)
 
-    setSquares([...squares])
-    setIsFirstPlayer(isFirstPlayer)
+    setSquares(clonedSquares)
     setIsGameOver(false)
+    setIsFirstPlayer(navigateToStep % 2 === 0)
     setWinner(null)
   }
 
   const handleSquarePress = (index: number) => {
-    const currentBoardState = squares[squares.length - 1]
+    const currentBoardState = clone(squares[squares.length - 1])
     const currentValue = currentBoardState[index]
     
     if(winner) {
@@ -82,16 +83,13 @@ const Game = () => {
       window.alert('Illegal move! Please add your symbol on an empty square.')
     }
     else {
-      let updatedBoardState = clone(currentBoardState)
-      updatedBoardState[index] = getCurrentPlayer()
-      squares.push(updatedBoardState)
+      currentBoardState[index] = getCurrentPlayer()
+      const gameCurrentState = getGameState(currentBoardState)
 
-      const gameCurrentState = getGameState(updatedBoardState)
-      
-      setIsFirstPlayer(!isFirstPlayer)
+      setSquares([...squares, ...[currentBoardState]])
       setIsGameOver(gameCurrentState.isGameOver)
+      setIsFirstPlayer(!isFirstPlayer)
       setWinner(gameCurrentState.winner)
-      setSquares([...squares])
     }
   }
   
