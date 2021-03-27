@@ -14,17 +14,18 @@ const Game = () => {
     [ null, null, null, null, null, null, null, null, null ],
   ])
 
+  const getCurrentPlayer = (isPlayerX: boolean) => isPlayerX ? 'X' : 'O'
+
   useEffect(() => {
     alert('Let the game begin!!!')
   }, [])
 
   useEffect(() => {
-    const gameStatus = winner ? `Player ${winner} won!` : isGameOver ? 'Game over - No more moves left! ':`Current Player: ${getCurrentPlayer()} `
+    const gameStatus = winner ? `Player ${winner} won!` : isGameOver ? 'Game over - No more moves left! ':`Current Player: ${getCurrentPlayer(isFirstPlayer)} `
     setGameStatus(gameStatus)
   }, [ isFirstPlayer, isGameOver, winner ])
 
-  const getCurrentPlayer = () => isFirstPlayer ? 'X' : 'O'
-  
+
   const computeWinner = (squares:(string| null)[]) => {
     const lines = [
       [0, 1, 2],
@@ -83,7 +84,7 @@ const Game = () => {
       window.alert('Illegal move! Please add your symbol on an empty square.')
     }
     else {
-      currentBoardState[index] = getCurrentPlayer()
+      currentBoardState[index] = getCurrentPlayer(isFirstPlayer)
       const gameCurrentState = getGameState(currentBoardState)
 
       setSquares([...squares, ...[currentBoardState]])
